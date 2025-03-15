@@ -1,25 +1,34 @@
 # backend/config_backend.py
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware  # Importa o middleware de CORS
 from pydantic import BaseModel
 import json
 import os
 
 app = FastAPI()
 
-POLICY_FILE = "policy.json"
+# Configuração do CORS: permite que qualquer origem acesse o backend.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Em produção, especifique quais origens são permitidas
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Define o caminho absoluto para policy.json
+POLICY_FILE = os.path.join(os.path.dirname(__file__), "policy.json")
 
 # Modelo para a política
 class Policy(BaseModel):
-    # Aqui a política é uma lista de regras e um valor default
-    # Cada regra terá: variável, operador, valor a comparar e o resultado (decisão) se a condição for atendida
+    # A política é uma lista de regras e um valor default
     policy: list
     default: float
 
 @app.get("/policy")
 def get_policy():
     if not os.path.exists(POLICY_FILE):
-        # Se não existir política salva, retorna uma política vazia com default 0
         return {"policy": [], "default": 0.0}
     with open(POLICY_FILE, "r") as f:
         data = json.load(f)
