@@ -1,10 +1,10 @@
-/* eslint-disable react-refresh/only-export-components */
 import { DRAWER_ANIMATION_IN_MILLISECONDS } from "components/Drawer";
 import { PropsWithChildren, createContext, useState } from "react";
 import { CommonDrawerProps, drawers } from "./Drawers";
 
 export enum DrawerName {
   newNode,
+  policy,
 }
 
 export type Editor = {
@@ -57,8 +57,7 @@ export function EditorProvider({ children }: PropsWithChildren) {
         drawerVisible,
         showDrawer,
         drawerProps,
-      }}
-    >
+      }}>
       {children}
     </editor.Provider>
   );

@@ -1,20 +1,21 @@
-import { useContext } from 'react';
-
-import { DrawerName, editor } from '../Editor';
-import { ChooseNodeDrawer } from './ChooseNode/ChooseNode';
+import { useContext } from "react";
+import { DrawerName, editor } from "../Editor";
+import React from "react";
+import { ChooseNodeDrawer } from "./ChooseNode/ChooseNode";
+import { PolicyDrawer } from "@src/components/PolicyDrawer";
 
 export type CommonDrawerProps = {
   id?: string;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const drawers = {
-  [DrawerName.newNode]: ChooseNodeDrawer
-} satisfies Record<DrawerName, (props: never) => JSX.Element>;
+export const drawers: Record<DrawerName, React.FC<any>> = {
+  [DrawerName.newNode]: ChooseNodeDrawer,
+  [DrawerName.policy]: PolicyDrawer,
+};
 
 export const CurrentDrawer = () => {
   const { drawerName, drawerProps } = useContext(editor);
   const Drawer = drawers[drawerName];
 
-  return <Drawer key={drawerProps.id} {...drawerProps} />;
+  return <>{Drawer && <Drawer key={drawerProps.id} {...drawerProps} />}</>;
 };
