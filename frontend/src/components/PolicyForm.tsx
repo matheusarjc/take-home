@@ -18,19 +18,15 @@ const PolicyForm: React.FC = () => {
     setRules([...rules, { variable: "", operator: ">", value: 0, result: 0 }]);
   };
 
-  /**
-   * Usando generics, o TypeScript infere corretamente
-   * que `field` é uma chave de `Rule` e que `value`
-   * deve ser do tipo correspondente a essa chave.
-   */
   const updateRule = <K extends keyof Rule>(index: number, field: K, value: Rule[K]) => {
-    // Clonamos o array para manter a imutabilidade
     const newRules = [...rules];
-    // Atualizamos somente a regra específica
-    newRules[index] = {
-      ...newRules[index],
-      [field]: value,
-    };
+    newRules[index] = { ...newRules[index], [field]: value };
+    setRules(newRules);
+  };
+
+  const deleteRule = (index: number) => {
+    const newRules = [...rules];
+    newRules.splice(index, 1);
     setRules(newRules);
   };
 
@@ -38,9 +34,9 @@ const PolicyForm: React.FC = () => {
     try {
       const policy = { policy: rules, default: defaultDecision };
       await axios.post("http://localhost:8000/policy", policy);
-      alert("Política salva com sucesso!");
+      alert("Policy have saved!");
     } catch (error) {
-      alert("Erro ao salvar a política.");
+      alert("Error to save policy.");
     }
   };
 
@@ -51,7 +47,7 @@ const PolicyForm: React.FC = () => {
         <div key={index} style={{ marginBottom: "10px", border: "1px solid #ccc", padding: "5px" }}>
           <input
             type="text"
-            placeholder="Nome da Variável"
+            placeholder="Variable"
             value={rule.variable}
             onChange={(e) => updateRule(index, "variable", e.target.value)}
           />
@@ -76,10 +72,10 @@ const PolicyForm: React.FC = () => {
             value={rule.result}
             onChange={(e) => updateRule(index, "result", Number(e.target.value))}
           />
+          <button onClick={() => deleteRule(index)}>Excluir</button>
         </div>
       ))}
       <button onClick={addRule}>Adicionar Regra</button>
-
       <div style={{ marginTop: "20px" }}>
         <h3>Decisão Default (se nenhuma regra for satisfeita)</h3>
         <input
@@ -88,7 +84,6 @@ const PolicyForm: React.FC = () => {
           onChange={(e) => setDefaultDecision(Number(e.target.value))}
         />
       </div>
-
       <button onClick={savePolicy} style={{ marginTop: "20px" }}>
         Salvar Política
       </button>

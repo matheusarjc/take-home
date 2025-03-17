@@ -1,6 +1,7 @@
-import { DRAWER_ANIMATION_IN_MILLISECONDS } from "components/Drawer";
+// frontend/src/Editor.tsx
 import { PropsWithChildren, createContext, useState } from "react";
-import { CommonDrawerProps, drawers } from "./Drawers";
+import { DRAWER_ANIMATION_IN_MILLISECONDS } from "components/Drawer";
+import { drawers } from "./Drawers";
 
 export enum DrawerName {
   newNode,
@@ -16,10 +17,9 @@ export type Editor = {
   showDrawer: <T extends DrawerName>(
     type: T,
     /**
-     * The type below automatically suggests the correct props for the chosen Drawer name.
-     * If the Drawer has no specific props, it uses only the Common ones.
+     * Automaticamente sugere os props corretos para o drawer escolhido.
      */
-    props: Parameters<(typeof drawers)[T]>[0] | CommonDrawerProps
+    props: Parameters<(typeof drawers)[T]>[0] | { id?: string }
   ) => void;
 };
 

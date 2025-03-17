@@ -3,11 +3,13 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactFlow, { Background } from "reactflow";
 import { AddNodeEdge } from "./AddNodeEdge";
 import { CurrentDrawer } from "./Drawers";
-import { EditorProvider, DrawerName, editor } from "./Editor";
+import { EditorProvider } from "./Editor";
 import { GraphProvider, graph } from "./Graph";
 import { allNodes } from "./Nodes";
 import { generateEdge, generateNode } from "./nodeGeneration";
 import { positionNodes } from "./positionNodes";
+import PolicyForm from "@src/components/PolicyForm";
+import DecisionForm from "@src/components/DecisionForm";
 
 const edgeTypes = {
   "add-node": AddNodeEdge,
@@ -23,27 +25,17 @@ function ReactFlowSandbox() {
     setNodes,
     setEdges,
   } = useContext(graph);
-
-  // Obtemos a função para abrir drawers a partir do contexto do Editor
-  const { showDrawer } = useContext(editor);
-
   const [centeredGraphAtStart, setCenteredGraphAtStart] = useState(false);
   const reactFlowRef = useRef<HTMLDivElement>(null);
 
   const tryCenteringGraph = useCallback(() => {
-    if (centeredGraphAtStart) {
-      return;
-    }
-
+    if (centeredGraphAtStart) return;
     fitZoomToGraph(reactFlowRef);
-
     const viewport = reactFlowInstance?.getViewport();
     if (viewport && viewport.x !== 0 && viewport.y !== 0) {
       return setCenteredGraphAtStart(true);
     }
-
-    const retryTimeInMs = 50;
-    setTimeout(() => tryCenteringGraph(), retryTimeInMs);
+    setTimeout(() => tryCenteringGraph(), 50);
   }, [centeredGraphAtStart, fitZoomToGraph, reactFlowInstance]);
 
   useEffect(() => {
@@ -79,24 +71,14 @@ function ReactFlowSandbox() {
         deleteKeyCode={null}>
         <Background className="bg-N-75" size={2} color="#C1C4D6" />
       </ReactFlow>
-      {/* Botão para abrir o drawer de política */}
-      <button
-        style={{
-          position: "absolute",
-          bottom: 0,
-          right: 20,
-          zIndex: 100,
-          padding: "8px 16px",
-          background: "#007bff",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-        onClick={() => showDrawer(DrawerName.policy, { id: "policyDrawer" })}>
-        Configurar Política
-      </button>
       <CurrentDrawer />
+      {/* Adicionando os formulários abaixo do diagrama */}
+      <div className="p-4">
+        <h2>Configuração da Política</h2>
+        <PolicyForm />
+        <h2>Testar Decisão</h2>
+        <DecisionForm />
+      </div>
     </div>
   );
 }
