@@ -1,24 +1,18 @@
 {
-  "policyTitle": "Teste",
-  "policy": [
-    {
-      "variable": "Age",
-      "operator": ">",
-      "value": 18,
-      "decision": 1000
-    },
-    {
-      "variable": "Income",
-      "operator": ">",
-      "value": 1000,
-      "decision": 1000
-    },
-    {
-      "variable": "Custo",
-      "operator": "<",
-      "value": 18,
-      "decision": 0
-    }
-  ],
-  "default": 0
+    "policyTitle": "Teste",
+    "policy": [
+        {
+            "variable": "Age",
+            "operator": ">",
+            "value": 18,
+            "decision": 0
+        },
+        {
+            "variable": "",
+            "operator": ">",
+            "value": 0,
+            "decision": 0
+        }
+    ],
+    "default": 1000
 }

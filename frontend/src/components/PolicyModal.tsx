@@ -39,20 +39,21 @@ const PolicyModal: React.FC<PolicyModalProps> = ({ isOpen, onClose }) => {
 
   const savePolicy = async () => {
     if (!policyTitle.trim()) {
-      setMessage("O título da política é obrigatório!");
+      setMessage("⚠️ O título da política é obrigatório!");
       return;
     }
 
     try {
       const policy = { policyTitle, policy: rules, default: defaultDecision };
       const response = await axios.post("http://localhost:8000/create-policy", policy);
-      setMessage(response.data.message);
+      setMessage(`✅ ${response.data.message}`);
+
       setTimeout(() => {
         setMessage(null);
         onClose();
       }, 2000);
     } catch (error: any) {
-      setMessage(error.response?.data?.detail || "Erro ao salvar política.");
+      setMessage(error.response?.data?.detail || "❌ Erro ao salvar política.");
     }
   };
 
@@ -72,18 +73,18 @@ const PolicyModal: React.FC<PolicyModalProps> = ({ isOpen, onClose }) => {
 
         {/* Regras */}
         {rules.map((rule, index) => (
-          <div key={index} className="border p-2 rounded mb-2">
+          <div key={index} className="border p-2 rounded mb-2 flex items-center gap-2">
             <input
               type="text"
               placeholder="Variável"
               value={rule.variable}
               onChange={(e) => updateRule(index, "variable", e.target.value)}
-              className="border p-1 rounded mr-2"
+              className="border p-1 rounded w-1/4"
             />
             <select
               value={rule.operator}
               onChange={(e) => updateRule(index, "operator", e.target.value)}
-              className="border p-1 rounded mr-2">
+              className="border p-1 rounded w-1/4">
               <option value=">">{">"}</option>
               <option value=">=">{">="}</option>
               <option value="<">{"<"}</option>
@@ -95,27 +96,27 @@ const PolicyModal: React.FC<PolicyModalProps> = ({ isOpen, onClose }) => {
               placeholder="Valor"
               value={rule.value}
               onChange={(e) => updateRule(index, "value", Number(e.target.value))}
-              className="border p-1 rounded mr-2"
+              className="border p-1 rounded w-1/4"
             />
             <input
               type="number"
               placeholder="Decisão"
               value={rule.decision}
               onChange={(e) => updateRule(index, "decision", Number(e.target.value))}
-              className="border p-1 rounded mr-2"
+              className="border p-1 rounded w-1/4"
             />
-            <button onClick={() => deleteRule(index)} className="text-red-600 ml-2">
+            <button onClick={() => deleteRule(index)} className="text-red-600">
               🗑
             </button>
           </div>
         ))}
         <button onClick={addRule} className="bg-gray-700 text-white px-2 py-1 rounded">
-          Adicionar Regra
+          ➕ Adicionar Regra
         </button>
 
         {/* Decisão Padrão */}
         <div className="mt-4">
-          <h3>Decisão Default</h3>
+          <h3 className="font-medium">Decisão Padrão</h3>
           <input
             type="number"
             value={defaultDecision}
@@ -127,10 +128,10 @@ const PolicyModal: React.FC<PolicyModalProps> = ({ isOpen, onClose }) => {
         {/* Botões de Ação */}
         <div className="mt-4 flex justify-between">
           <button onClick={onClose} className="bg-gray-500 text-white px-3 py-1 rounded">
-            Cancelar
+            ❌ Cancelar
           </button>
           <button onClick={savePolicy} className="bg-blue-600 text-white px-3 py-1 rounded">
-            Salvar
+            💾 Salvar
           </button>
         </div>
 
