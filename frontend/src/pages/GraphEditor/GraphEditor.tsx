@@ -8,8 +8,7 @@ import { GraphProvider, graph } from "./Graph";
 import { allNodes } from "./Nodes";
 import { generateEdge, generateNode } from "./nodeGeneration";
 import { positionNodes } from "./positionNodes";
-import PolicyForm from "@src/components/PolicyForm";
-import DecisionForm from "@src/components/DecisionForm";
+import PolicyModal from "../../components/PolicyModal";
 
 const edgeTypes = {
   "add-node": AddNodeEdge,
@@ -26,6 +25,7 @@ function ReactFlowSandbox() {
     setEdges,
   } = useContext(graph);
   const [centeredGraphAtStart, setCenteredGraphAtStart] = useState(false);
+  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
   const reactFlowRef = useRef<HTMLDivElement>(null);
 
   const tryCenteringGraph = useCallback(() => {
@@ -60,6 +60,13 @@ function ReactFlowSandbox() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden w-full relative">
+      <div className="absolute top-4 right-4 z-10">
+        <button
+          onClick={() => setIsPolicyModalOpen(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Criar Nova Política
+        </button>
+      </div>
       <ReactFlow
         ref={reactFlowRef}
         nodes={nodes}
@@ -72,13 +79,7 @@ function ReactFlowSandbox() {
         <Background className="bg-N-75" size={2} color="#C1C4D6" />
       </ReactFlow>
       <CurrentDrawer />
-      {/* Adicionando os formulários abaixo do diagrama */}
-      <div className="p-4">
-        <h2>Configuração da Política</h2>
-        <PolicyForm />
-        <h2>Testar Decisão</h2>
-        <DecisionForm />
-      </div>
+      <PolicyModal isOpen={isPolicyModalOpen} onClose={() => setIsPolicyModalOpen(false)} />
     </div>
   );
 }

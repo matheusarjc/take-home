@@ -5,7 +5,6 @@ import { drawers } from "./Drawers";
 
 export enum DrawerName {
   newNode,
-  policy,
 }
 
 export type Editor = {
